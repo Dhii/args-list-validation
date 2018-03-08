@@ -53,7 +53,9 @@ trait GetArgsListErrorsCapableTrait
             // Is argument of the right type?
             if (method_exists($_param, 'hasType') && $_param->hasType()) {
                 $type     = $_param->getType();
-                $typeName = $type->getName();
+                $typeName = method_exists($type, 'getName')
+                    ? $type->getName()
+                    : $type->__toString();
                 $isOfType = null;
 
                 // If type is built-in, it should be safe to use a built-in function
