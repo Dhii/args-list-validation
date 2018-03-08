@@ -2,10 +2,12 @@
 
 namespace Dhii\Validation;
 
+use InvalidArgumentException;
 use OutOfRangeException;
 use ReflectionParameter;
 use Exception as RootException;
 use Dhii\Util\String\StringableInterface as Stringable;
+use ReflectionType;
 use stdClass;
 use Traversable;
 
@@ -50,33 +52,42 @@ trait GetArgsListErrorsCapableTrait
             $arg      = $isArgPresent ? $args[$pos] : null; // The value of the arg
             $isNullOk = $isNullable && $isArgPresent && is_null($arg); // Argument is present, is null, and this is allowed
 
+            if ($isNullOk) {
+                continue;
+            }
+
             // Is argument of the right type?
+            // Type spec is not for all PHP versions
             if (method_exists($_param, 'hasType') && $_param->hasType()) {
-                $type     = $_param->getType();
-                $typeName = method_exists($type, 'getName')
-                    ? $type->getName()
-                    : $type->__toString();
-                $isOfType = null;
-
-                // If type is built-in, it should be safe to use a built-in function
-                if ($type->isBuiltin()) {
-                    $testFunc = sprintf('is_%1$s', $typeName);
-                    $isOfType = call_user_func_array($testFunc, [$args[$pos]]);
+                try {
+                    $error = $this->_getValueTypeError($arg, $_param->getType());
                 }
-                // If type is not built-in, then check whether instance of
-                else {
-                    $isOfType = $arg instanceof $typeName;
+                catch (InvalidArgumentException $e) {
+                    throw $this->_createOutOfRangeException($this->__('Problem validating type of argument #%1$d against spec criterion #%1$d', [$pos, $_idx]), null, $e, $_param);
                 }
 
-                if (!$isOfType && !$isNullOk) {
-                    $errors[] = $this->__('Argument #%1$s must be of type "%2$s"', [$pos, $typeName]);
-                    continue;
+                if (!is_null($error)) {
+                    $errors[] = $this->__('Argument #%1$s is invalid: %2$s', [$pos, $error]);
                 }
             }
         }
 
         return $errors;
     }
+
+    /**
+     * Generates a list of reasons for a value failing validation against a type spec.
+     *
+     * @since [*next-version*]
+     *
+     * @param mixed $value The value being validated.
+     * @param ReflectionType $type A type criteria.
+     *
+     * @throws InvalidArgumentException If one of the criteria is invalid.
+     *
+     * @return string|Stringable|null The error, if value doesn't match the spec; `null` otherwise.
+     */
+    abstract protected function _getValueTypeError($value, $type);
 
     /**
      * Creates a new Out Of Range exception.

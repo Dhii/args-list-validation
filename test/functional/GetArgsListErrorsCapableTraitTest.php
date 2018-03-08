@@ -3,6 +3,8 @@
 namespace Dhii\Validation\FuncTest;
 
 use Dhii\Validation\GetArgsListErrorsCapableTrait as TestSubject;
+use InvalidArgumentException;
+use OutOfRangeException;
 use ReflectionFunction;
 use stdClass;
 use Xpmock\TestCase;
@@ -37,11 +39,13 @@ class GetArgsListErrorsCapableTraitTest extends TestCase
     {
         is_array($methods) && $methods = $this->mergeValues($methods, [
             '__',
+            '_createInvalidArgumentException',
+            '_createOutOfRangeException'
         ]);
 
-        $mock = $this->getMockBuilder(static::TEST_SUBJECT_CLASSNAME)
+        $mock = $this->mockTraits([static::TEST_SUBJECT_CLASSNAME, 'Dhii\Validation\GetValueTypeErrorCapableTrait'])
             ->setMethods($methods)
-            ->getMockForTrait();
+            ->getMock();
 
         $mock->method('__')
                 ->will($this->returnCallback(function ($string, $args = []) {
@@ -97,6 +101,36 @@ class GetArgsListErrorsCapableTraitTest extends TestCase
     }
 
     /**
+     * Creates a mock that uses traits.
+     *
+     * This is particularly useful for testing integration between multiple traits.
+     *
+     * @since [*next-version*]
+     *
+     * @param string[] $traitNames Names of the traits for the mock to use.
+     *
+     * @return MockBuilder The builder for a mock of an object that uses the traits.
+     */
+    public function mockTraits($traitNames = [])
+    {
+        $paddingClassName = uniqid('Traits');
+        $definition = vsprintf('abstract class %1$s {%2$s}', [
+            $paddingClassName,
+            implode(
+                ' ',
+                array_map(
+                    function ($v) {
+                        return vsprintf('use %1$s;', [$v]);
+                    },
+                    $traitNames)),
+        ]);
+        var_dump($definition);
+        eval($definition);
+
+        return $this->getMockBuilder($paddingClassName);
+    }
+
+    /**
      * Creates a new exception.
      *
      * @since [*next-version*]
@@ -108,6 +142,42 @@ class GetArgsListErrorsCapableTraitTest extends TestCase
     public function createException($message = '')
     {
         $mock = $this->getMockBuilder('Exception')
+            ->setConstructorArgs([$message])
+            ->getMock();
+
+        return $mock;
+    }
+
+    /**
+     * Creates a new Out of Range exception.
+     *
+     * @since [*next-version*]
+     *
+     * @param string $message The exception message.
+     *
+     * @return OutOfRangeException|MockObject The new exception.
+     */
+    public function createOutOfRangeException($message = '')
+    {
+        $mock = $this->getMockBuilder('OutOfRangeException')
+            ->setConstructorArgs([$message])
+            ->getMock();
+
+        return $mock;
+    }
+
+    /**
+     * Creates a new Invalid Argument exception.
+     *
+     * @since [*next-version*]
+     *
+     * @param string $message The exception message.
+     *
+     * @return InvalidArgumentException|MockObject The new exception.
+     */
+    public function createInvalidArgumentException($message = '')
+    {
+        $mock = $this->getMockBuilder('InvalidArgumentException')
             ->setConstructorArgs([$message])
             ->getMock();
 

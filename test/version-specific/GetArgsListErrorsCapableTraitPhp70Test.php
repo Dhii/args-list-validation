@@ -37,11 +37,13 @@ class GetArgsListErrorsCapableTraitPhp70Test extends TestCase
     {
         is_array($methods) && $methods = $this->mergeValues($methods, [
             '__',
+            '_createInvalidArgumentException',
+            '_createOutOfRangeException'
         ]);
 
-        $mock = $this->getMockBuilder(static::TEST_SUBJECT_CLASSNAME)
+        $mock = $this->mockTraits([static::TEST_SUBJECT_CLASSNAME, 'Dhii\Validation\GetValueTypeErrorCapableTrait'])
             ->setMethods($methods)
-            ->getMockForTrait();
+            ->getMock();
 
         $mock->method('__')
                 ->will($this->returnCallback(function ($string, $args = []) {
@@ -115,6 +117,36 @@ class GetArgsListErrorsCapableTraitPhp70Test extends TestCase
     }
 
     /**
+     * Creates a mock that uses traits.
+     *
+     * This is particularly useful for testing integration between multiple traits.
+     *
+     * @since [*next-version*]
+     *
+     * @param string[] $traitNames Names of the traits for the mock to use.
+     *
+     * @return MockBuilder The builder for a mock of an object that uses the traits.
+     */
+    public function mockTraits($traitNames = [])
+    {
+        $paddingClassName = uniqid('Traits');
+        $definition = vsprintf('abstract class %1$s {%2$s}', [
+            $paddingClassName,
+            implode(
+                ' ',
+                array_map(
+                    function ($v) {
+                        return vsprintf('use %1$s;', [$v]);
+                    },
+                    $traitNames)),
+        ]);
+        var_dump($definition);
+        eval($definition);
+
+        return $this->getMockBuilder($paddingClassName);
+    }
+
+    /**
      * Tests whether a valid instance of the test subject can be created.
      *
      * @since [*next-version*]
@@ -150,7 +182,7 @@ class GetArgsListErrorsCapableTraitPhp70Test extends TestCase
 
         $result = $_subject->_getArgsListErrors($args, $spec);
         $this->assertCount(1, $result, 'Wrong validation result');
-        $this->assertRegExp('!^Argument #1 must be of type "int"$!', $result[0], 'Wrong error reported');
+        $this->assertRegExp('!^Argument #1 is invalid: Value must be of type "int"$!', $result[0], 'Wrong error reported');
     }
 
     /**
@@ -173,6 +205,6 @@ class GetArgsListErrorsCapableTraitPhp70Test extends TestCase
 
         $result = $_subject->_getArgsListErrors($args, $spec);
         $this->assertCount(1, $result, 'Wrong validation result');
-        $this->assertRegExp('!^Argument #1 must be of type "ArrayIterator"$!', $result[0], 'Wrong error reported');
+        $this->assertRegExp('!^Argument #1 is invalid: Value must be of type "ArrayIterator"$!', $result[0], 'Wrong error reported');
     }
 }
