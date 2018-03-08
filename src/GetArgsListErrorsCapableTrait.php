@@ -6,9 +6,28 @@ use OutOfRangeException;
 use ReflectionParameter;
 use Exception as RootException;
 use Dhii\Util\String\StringableInterface as Stringable;
+use stdClass;
+use Traversable;
 
+/**
+ * Functionality for validating an args list.
+ *
+ * @since [*next-version*]
+ */
 trait GetArgsListErrorsCapableTrait
 {
+    /**
+     * Produces a list of reasons why an args list is invalid against a spec.
+     *
+     * @since [*next-version*]
+     *
+     * @param array $args The list of arguments in order.
+     * @param array|Traversable|stdClass $spec The list of criteria.
+     *
+     * @throws OutOfRangeException If one of the criteria is invalid.
+     *
+     * @return string[]|Stringable[]
+     */
     protected function _getArgsListErrors($args, $spec)
     {
         $errors = [];
