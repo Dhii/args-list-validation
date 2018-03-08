@@ -26,7 +26,7 @@ trait GetArgsListErrorsCapableTrait
      *
      * @throws OutOfRangeException If one of the criteria is invalid.
      *
-     * @return string[]|Stringable[]
+     * @return string[]|Stringable[] The list of errors.
      */
     protected function _getArgsListErrors($args, $spec)
     {

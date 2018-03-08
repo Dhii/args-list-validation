@@ -1,5 +1,5 @@
 {
-    "name": "dhii/args-list-validator",
+    "name": "dhii/args-list-validation",
     "description": "Validation of an arguments list",
     "type": "library",
     "license": "MIT",
