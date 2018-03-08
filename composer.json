@@ -29,7 +29,8 @@
     "autoload-dev": {
         "psr-4": {
             "Dhii\\Validation\\UnitTest\\": "test/unit",
-            "Dhii\\Validation\\FuncTest\\": "test/functional"
+            "Dhii\\Validation\\FuncTest\\": "test/functional",
+            "Dhii\\Validation\\VersionTest\\": "test/version-specific"
         }
     },
     "scripts": {
