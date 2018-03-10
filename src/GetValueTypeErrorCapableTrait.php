@@ -19,8 +19,8 @@ trait GetValueTypeErrorCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param mixed $value The value being validated.
-     * @param ReflectionType $type A type criteria.
+     * @param mixed          $value The value being validated.
+     * @param ReflectionType $type  A type criteria.
      *
      * @throws InvalidArgumentException If one of the criteria is invalid.
      *
@@ -51,7 +51,7 @@ trait GetValueTypeErrorCapableTrait
             return $this->__('Value must be of type "%1$s"', [$typeName]);
         }
 
-        return null;
+        return;
     }
 
     /**

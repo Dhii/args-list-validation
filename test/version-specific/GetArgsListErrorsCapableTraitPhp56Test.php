@@ -4,7 +4,6 @@ namespace Dhii\Validation\VersionTest;
 
 use Dhii\Validation\GetArgsListErrorsCapableTrait as TestSubject;
 use ReflectionFunction;
-use stdClass;
 use Xpmock\TestCase;
 use Exception as RootException;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;

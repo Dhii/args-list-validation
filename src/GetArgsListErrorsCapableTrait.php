@@ -23,7 +23,7 @@ trait GetArgsListErrorsCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param array $args The list of arguments in order.
+     * @param array                      $args The list of arguments in order.
      * @param array|Traversable|stdClass $spec The list of criteria.
      *
      * @throws OutOfRangeException If one of the criteria is invalid.
@@ -61,8 +61,7 @@ trait GetArgsListErrorsCapableTrait
             if (method_exists($_param, 'hasType') && $_param->hasType()) {
                 try {
                     $error = $this->_getValueTypeError($arg, $_param->getType());
-                }
-                catch (InvalidArgumentException $e) {
+                } catch (InvalidArgumentException $e) {
                     throw $this->_createOutOfRangeException($this->__('Problem validating type of argument #%1$d against spec criterion #%1$d', [$pos, $_idx]), null, $e, $_param);
                 }
 
@@ -80,8 +79,8 @@ trait GetArgsListErrorsCapableTrait
      *
      * @since [*next-version*]
      *
-     * @param mixed $value The value being validated.
-     * @param ReflectionType $type A type criteria.
+     * @param mixed          $value The value being validated.
+     * @param ReflectionType $type  A type criteria.
      *
      * @throws InvalidArgumentException If one of the criteria is invalid.
      *
