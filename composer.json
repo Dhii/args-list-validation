@@ -1,5 +1,5 @@
 {
-    "name": "dhii/args-list-validator",
+    "name": "dhii/args-list-validation",
     "description": "Validation of an arguments list",
     "type": "library",
     "license": "MIT",
@@ -18,7 +18,8 @@
         "phpunit/phpunit": "^4.8",
         "ptrofimov/xpmock": "^1.1",
         "dhii/php-cs-fixer-config": "^0.1",
-        "codeclimate/php-test-reporter": "<=0.3.2"
+        "codeclimate/php-test-reporter": "<=0.3.2",
+        "dhii/stringable-interface": "^0.1"
     },
     "autoload": {
         "psr-4": {
@@ -28,7 +29,8 @@
     "autoload-dev": {
         "psr-4": {
             "Dhii\\Validation\\UnitTest\\": "test/unit",
-            "Dhii\\Validation\\FuncTest\\": "test/functional"
+            "Dhii\\Validation\\FuncTest\\": "test/functional",
+            "Dhii\\Validation\\VersionTest\\": "test/version-specific"
         }
     },
     "scripts": {
