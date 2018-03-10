@@ -38,7 +38,8 @@ class GetArgsListErrorsCapableTraitPhp70Test extends TestCase
         is_array($methods) && $methods = $this->mergeValues($methods, [
             '__',
             '_createInvalidArgumentException',
-            '_createOutOfRangeException'
+            '_createOutOfRangeException',
+            '_normalizeString',
         ]);
 
         $mock = $this->mockTraits([static::TEST_SUBJECT_CLASSNAME, 'Dhii\Validation\GetValueTypeErrorCapableTrait'])
@@ -49,6 +50,10 @@ class GetArgsListErrorsCapableTraitPhp70Test extends TestCase
                 ->will($this->returnCallback(function ($string, $args = []) {
                     return vsprintf($string, $args);
                 }));
+        $mock->method('_normalizeString')
+            ->will($this->returnCallback(function ($string) {
+                return (string) ($string);
+            }));
 
         return $mock;
     }

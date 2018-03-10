@@ -67,7 +67,7 @@ trait GetArgsListErrorsCapableTrait
                 }
 
                 if (!is_null($error)) {
-                    $errors[] = $this->__('Argument #%1$s is invalid: %2$s', [$pos, $error]);
+                    $errors[] = $this->__('Argument #%1$s is invalid: %2$s', [$pos, $this->_normalizeString($error)]);
                 }
             }
         }
@@ -88,6 +88,22 @@ trait GetArgsListErrorsCapableTrait
      * @return string|Stringable|null The error, if value doesn't match the spec; `null` otherwise.
      */
     abstract protected function _getValueTypeError($value, $type);
+
+    /**
+     * Normalizes a value to its string representation.
+     *
+     * The values that can be normalized are any scalar values, as well as
+     * {@see StringableInterface).
+     *
+     * @since [*next-version*]
+     *
+     * @param Stringable|string|int|float|bool $subject The value to normalize to string.
+     *
+     * @throws InvalidArgumentException If the value cannot be normalized.
+     *
+     * @return string The string that resulted from normalization.
+     */
+    abstract protected function _normalizeString($subject);
 
     /**
      * Creates a new Out Of Range exception.
